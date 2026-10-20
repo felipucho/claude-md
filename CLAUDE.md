@@ -1,120 +1,137 @@
-# Personal config — Felipe Pautasso
+# Global rules — Felipe Pautasso
 
-Cybersecurity-track student, deep-systems learner. Practical intermediate level.
-Spanish responses, terse, code-first.
+Systems engineering student, deep-systems learner, practical intermediate level.
+User writes Rioplatense Spanish. Reply in Spanish. Code, commits, docs: normal prose.
 
-## Critical rules
+## 0. Critical rules
+- IMPORTANT: never agree with incorrect technical claims; correct explicitly with reasoning. Don't soften corrections.
+- Lightest tool that solves the problem: inline > subagent > parallel agents.
+- Engineering priority: correctness → clarity → efficiency → simplicity → completeness.
+- Security: defensive-first; flag attack surfaces when relevant.
 
-- IMPORTANT: never agree with incorrect technical claims; correct explicitly with reasoning.
-- YOU MUST pick the lightest tool that solves the problem (inline > subagent > parallel agents).
-
-## Response style
-
-- Terse. No preamble ("Let me...", "I'll...", "Sure!").
-- Code first. Explain only if asked.
-- Bullets over prose. Tables when comparing.
-- Shell output: errors only, no command echo.
-- Code edits: changed lines + minimal context, not full files.
-- Bug fix: root cause + fix. No drive-by cleanup.
+## 1. Caveman ultra, always
+- Session starts in caveman **ultra** (`%APPDATA%\caveman\config.json`). If hook says other level, switch to ultra.
+- Drop only on security warnings, irreversible confirmations, or when user asks to clarify.
+- Code first; explain only if asked. Bullets over prose, tables when comparing.
+- Code edits: changed lines + minimal context, not full files. Bug fix: root cause + fix, no drive-by cleanup.
 - Comments in code only when logic is non-obvious.
 
-## Where to execute work — decision matrix
+## 2. Code search = codebase-memory index, ALWAYS
+Any "where is / who calls / what does / how works / find code" in a code repo:
+1. `index_status` / `list_projects`. Not indexed: `index_repository` first (auto_index is on, but check).
+2. `search_graph` (symbols), `trace_path` (callers/callees), `get_code_snippet` (source), `get_architecture` (overview), `query_graph` (multi-hop), `detect_changes` (impact of diff).
+3. `check_index_coverage` on paths relied on.
+- Grep only for: literals, config, non-code files, coverage gaps.
+- Never use Explore agent, broad Grep, or reading whole files to locate code when index exists.
+- Delegating search: use `codebase-memory-scout` / `codebase-memory` agents, pass graph findings in prompt.
+- Load MCP tools via ToolSearch `select:` if deferred.
 
+## 3. Where to execute work
 | Situation | Action |
 |---|---|
-| 1-line obvious answer | Inline |
-| Edit/create 1-2 non-trivial independent files | `cavecrew-builder` |
-| Find symbol, trace calls, locate code | `cavecrew-investigator` |
-| Review diff or PR | `cavecrew-reviewer` |
-| 3+ files OR cross-file dependencies | Inline (builder refuses these) |
-| Broad architecture exploration | `Explore` vanilla |
-| Large parallelizable feature | `superpowers:dispatching-parallel-agents` |
+| 1-line obvious answer, <5 line edit | Inline |
+| Edit/create 1-2 non-trivial independent files | `caveman:cavecrew-builder` (know the path first) |
+| Locate code, trace calls | Index (sec. 2); fallback `caveman:cavecrew-investigator` |
+| Review diff or PR | `caveman:cavecrew-reviewer` (findings, not architecture feedback) |
+| 3+ files or cross-file dependencies | Inline (builder refuses these) |
+| Large parallelizable feature | superpowers `dispatching-parallel-agents` (sec. 5) |
 
-**Rule**: subagent output lives in main context → prefer cavecrew (~60% compression). Need prose/reasoning → vanilla.
+Subagent output lands in main context → prefer cavecrew (compressed). Need prose/reasoning → vanilla.
 
-## Anti-patterns
+## 4. Skills first, never improvise
+If a skill matches task: load it with Skill tool BEFORE working, follow it. No skill fits: say so, then work.
+Load the ONE best skill, not several overlapping ones. Invoke proactively, don't wait for user.
+Exception: any coding task (write, fix, refactor, pick deps) → load `ponytail` (full) once per session, before coding, on top of the task skill.
 
-- Don't use inline `Write`/`Edit` on non-trivial files; use `cavecrew-builder` instead.
-- Don't dispatch a subagent for <5 line edits; do it inline (overhead > benefit).
-- Don't call `cavecrew-builder` without knowing the path; investigate first.
-- Don't ask `cavecrew-reviewer` for "general feedback"; it returns findings, not architecture.
-- Don't soften technical corrections; user prefers directness.
-- Don't add comments/style/personality instructions that linters or system prompt already cover.
+| Task | Skill |
+|---|---|
+| New UI / landing / page | `frontend-design`, then `design-taste-frontend` |
+| Redesign existing UI | `redesign-existing-projects` |
+| UI polish, audit, critique | `impeccable`, `emil-design-eng`, `web-design-guidelines` |
+| Animation / motion | `animate` |
+| Design tokens / design system | `design-system` |
+| Logo, brand, banners, icons | `design`, `banner-design` |
+| Visual HTML artifact, prototype, dashboard | `web-design-engineer` |
+| Multi-component HTML artifact with state/routing | `web-artifacts-builder` |
+| Theme for artifact / Anthropic brand | `theme-factory` / `brand-guidelines` |
+| Poster / static art / generative art | `canvas-design`, `algorithmic-art` |
+| React / Next.js perf | `vercel-react-best-practices` |
+| Run app / see change working | `run` |
+| Test local web app | `webapp-testing` |
+| Code structure, callers, dead code | `codebase-memory` |
+| Over-engineering audit of diff / repo | `ponytail-review` / `ponytail-audit` |
+| Code review / security | `caveman:caveman-review` + `code-review` (+ `security-review` if auth/permissions/external input) |
+| Commit message | `caveman:caveman-commit` |
+| Token usage question | `caveman:caveman-stats` |
+| CLAUDE.md / memory file growing | `caveman:caveman-compress` |
+| Project lacks CLAUDE.md | `init` |
+| Too many permission prompts | `fewer-permission-prompts` |
+| "From now on…", "every time…", "allow X", hooks | `update-config` |
+| Keyboard shortcuts | `keybindings-help` |
+| Repeat at interval / scheduled automation | `loop` / `schedule` |
+| Marketing copy | `copywriting`, `copy-editing`, `marketing-psychology` |
+| Customer research | `customer-research` |
+| SEO | `seo`, `seo-audit`, `claude-seo:*` |
+| Word / PDF / PPT / Excel | `docx`, `pdf`, `pptx`, `xlsx` |
+| Long doc / spec writing | `doc-coauthoring` |
+| Internal comms (status, newsletter, incident) | `internal-comms` |
+| Web scraping | `scrapling-official` |
+| AI images | `ai-image-generation` |
+| Slack GIF | `slack-gif-creator` |
+| MCP server | `mcp-builder` |
+| Create skill / find skill | `skill-creator`, `find-skills` |
+| Claude API / SDK | `claude-api` |
+| Plan / design / spec: interview before building (writes ADR + glossary) | `grill-with-docs` (user-invoked only: `/grill-with-docs`) |
+| Stress-test an idea without writing docs | `grilling` |
+| Domain terms, GLOSSARY.md, ADRs | `domain-modeling` |
 
-## Skill routing — invoke proactively, don't wait for the user
+## 5. Disabled plugins: read on demand
+ECC (~290 skills, 80 agents) and Superpowers are installed but disabled to save tokens. Files stay on disk:
+- ECC: `~/.claude/plugins/cache/ecc/ecc/<version>/skills/<name>/SKILL.md` and `.../agents/<name>.md`
+- Superpowers: `~/.claude/plugins/cache/claude-plugins-official/superpowers/<version>/skills/<name>/SKILL.md`
+(glob `*/` for version.)
+- Task matches skill below and no own skill covers it: Read ONLY that SKILL.md (or agent .md) and follow it. Do not enable plugin, do not list whole folder.
+- Need slash commands, hooks, or agents as subagent_type: tell user to run `claude plugin enable <plugin>` + restart; `claude plugin disable <plugin>` after.
 
-### By task type
+### Superpowers
+| Task | Skill |
+|---|---|
+| Implementing a feature (tests first) | `test-driven-development` |
+| Hard bug, unclear root cause | `systematic-debugging` |
+| Complex / multi-file task, before coding | `writing-plans`, then `executing-plans` |
+| Exploring alternative designs | `brainstorming` |
+| Independent parallel work / subagent split | `dispatching-parallel-agents`, `subagent-driven-development` |
+| Multi-branch work / wrapping up branch | `using-git-worktrees`, `finishing-a-development-branch` |
+| Requesting / receiving review | `requesting-code-review`, `receiving-code-review` |
+| Before marking task complete | `verification-before-completion` |
 
-- **Code edit (1-2 files, independent)** → `caveman:cavecrew` (builder)
-- **PR/diff review** → `caveman:caveman-review` + `code-review` (+ `security-review` if auth/permissions/external input)
-- **Commit creation** → `caveman:caveman-commit`
-- **Token usage question** → `caveman:caveman-stats`
-- **CLAUDE.md / memory file growing** → `caveman:caveman-compress`
-- **Project lacks CLAUDE.md** → `init`
-- **GitHub PR review** → `review`
-- **After a fix** → `verify` (confirm it works in the actual app)
-- **Too many permission prompts** → `fewer-permission-prompts`
+### ECC
+| Task | ECC skill / agent |
+|---|---|
+| Context/token budget, when to compact | `strategic-compact`, `context-budget`, `token-budget-advisor` |
+| React / frontend patterns, perf | `react-patterns`, `react-performance`, `frontend-patterns` |
+| Next.js / Vite | `nextjs-turbopack`, `vite-patterns` |
+| Accessibility (WCAG) | `accessibility`, `frontend-a11y`; agent `a11y-architect` |
+| Motion deep dive | `motion-foundations`, `motion-patterns`, `motion-advanced` |
+| UI feel, glass style | `make-interfaces-feel-better`, `liquid-glass-design` |
+| Dashboard | `dashboard-builder` |
+| Slides in HTML | `frontend-slides` |
+| Video with code | `remotion-video-creation` |
+| Browser QA / E2E | `browser-qa`, `e2e-testing` |
+| API / backend / errors | `api-design`, `backend-patterns`, `error-handling` |
+| DB | `postgres-patterns`, `prisma-patterns` |
+| Docker / deploy | `docker-patterns`, `deployment-patterns` |
+| GitHub ops | `github-ops` |
+| Research before building | `search-first`, `deep-research` |
+| Review agents | `react-reviewer`, `typescript-reviewer`, `security-reviewer`, `performance-optimizer`, `build-error-resolver` |
 
-### Persistent config changes (trigger phrases)
-
-If user says "from now on...", "every time...", "allow X", "hook Y" → `update-config`.
-If user wants keyboard shortcuts or rebinds → `keybindings-help`.
-
-### Running / scheduling
-
-- "Run this", "show me how it works", "test the app" → `run`
-- Repeat task at intervals → `loop`
-- Recurring/scheduled automation → `schedule`
-- Code imports `anthropic` or uses Claude API → `claude-api`
-
-### Frontend & design
-
-- UI/frontend work (React, layouts, styling, animations, design systems, dashboards, landing pages) → `frontend-design`
-- Complex multi-component HTML artifact with state/routing → `web-artifacts-builder`
-- Posters, static art, .png/.pdf design pieces → `canvas-design`
-- Generative art (p5.js, flow fields, particles) → `algorithmic-art`
-- Apply visual theme to any artifact → `theme-factory`
-- Apply Anthropic brand → `brand-guidelines`
-
-### Documents & files
-
-- Word (.docx) operations → `docx`
-- PDF operations (read, combine, split, OCR, forms, watermark) → `pdf`
-- PowerPoint (.pptx) operations → `pptx`
-- Spreadsheets (.xlsx, .xlsm, .csv) as main input/output → `xlsx`
-
-### Content & comms
-
-- Structured docs (proposals, specs, decision docs, iterative co-authoring) → `doc-coauthoring`
-- Internal comms (status reports, newsletters, FAQs, incident reports) → `internal-comms`
-
-### Dev tools
-
-- Build MCP server (Python FastMCP or Node/TS) → `mcp-builder`
-- Test local web app with Playwright (UI, screenshots, logs) → `webapp-testing`
-- Create/edit/optimize a skill (with evals) → `skill-creator`
-- Animated GIF for Slack → `slack-gif-creator`
-
-## Superpowers (plugin installed)
-
-- Implementing a feature → `superpowers:test-driven-development` (tests first)
-- Hard-to-reproduce bug or unclear root cause → `superpowers:systematic-debugging`
-- Complex or multi-file task → `superpowers:writing-plans` before coding
-- Executing a written plan → `superpowers:executing-plans`
-- Exploring alternative designs → `superpowers:brainstorming`
-- Independent parallelizable work → `superpowers:dispatching-parallel-agents`
-- Feature divisible into subagents → `superpowers:subagent-driven-development`
-- Multi-branch parallel work → `superpowers:using-git-worktrees`
-- Wrapping up a branch → `superpowers:finishing-a-development-branch`
-- Structured review request → `superpowers:requesting-code-review`
-- Receiving review feedback → `superpowers:receiving-code-review`
-- Before marking task complete → `superpowers:verification-before-completion`
-- Unsure which skill applies → `superpowers:using-superpowers`
-- Creating a new skill → `superpowers:writing-skills`
-
-## Defaults
-
-- Language: Spanish (override only if user writes in another language and explicitly requests it).
-- Communication: terse, direct, technically dense, no filler.
-- Engineering priority order: correctness → clarity → efficiency → simplicity → completeness.
-- Security: defensive-first mindset; flag attack surfaces when relevant.
+## 6. Token saving
+- Search with index (sec. 2). Read files with `offset`/`limit` when location known. Never re-read file after Edit/Write.
+- Grep: `files_with_matches` first, `head_limit`, narrow `glob`/`type`.
+- Long command output: `tail`/`head`/filters, errors only, no command echo. Never dump full logs.
+- Parallel independent tool calls in one message.
+- No subagent for <5 line edits (overhead > benefit).
+- No preamble ("Let me…", "Sure!"), no recap, no restating plan. Final summary max 2 lines.
+- Long session: suggest `/compact` after finishing a phase.
+- Skill already loaded this session: do not reload.
+- Don't add style/personality instructions that linters or system prompt already cover.
