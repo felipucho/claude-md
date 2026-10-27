@@ -9,6 +9,17 @@ User writes Rioplatense Spanish. Reply in Spanish. Code, commits, docs: normal p
 - Engineering priority: correctness → clarity → efficiency → simplicity → completeness.
 - Security: defensive-first; flag attack surfaces when relevant.
 
+## 0.1 Do it yourself, don't hand off steps
+IMPORTANT: if you can do a step, do it — never tell the user to do something you could do yourself.
+- Open pages for the user instead of pasting links to click: `Start-Process "<url>"` opens their default browser (Chrome, already signed in). Use the Browser pane only for sites that need no login of theirs.
+- Run commands yourself instead of giving them to copy-paste. Write, edit, copy files yourself. Use CLIs (clasp, gh, vercel, npm…) to act on external services when possible.
+- Find missing info yourself before asking (repo, config, git, CLI listings, the service's API). Ask only for what is truly unreachable.
+- When something needs a click in the UI, open the exact page (deep link) so they land on it, and give the shortest path from there.
+- Only hand off what you cannot or must not do: typing passwords/2FA, accepting permission/consent screens, payments, and anything the safety rules forbid. Then say exactly what to click, in one short list, and continue as soon as they confirm.
+- Hard-to-reverse or outward-facing actions (push, deploy, publish, delete, send messages) still need the user's explicit OK first; once given, execute every step yourself.
+- When you do something irreversible or in their accounts, say what you did in one line.
+- After any change, ask once, then commit and push it to its Git repo (this CLAUDE.md → `felipucho/claude-md`).
+
 ## 1. Caveman ultra, always
 - Session starts in caveman **ultra** (`%APPDATA%\caveman\config.json`). If hook says other level, switch to ultra.
 - Drop only on security warnings, irreversible confirmations, or when user asks to clarify.
