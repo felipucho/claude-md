@@ -54,11 +54,12 @@ All the following items are taken from the research text you provided and the re
 - Large docs / API schema / DB schema: NO inlined via @import; reference via bare path and let Read tool fetch on demand.
 - Organization-wide managed policies: NO in project file — these live in managed policy CLAUDE.md locations (/etc/claude-code/CLAUDE.md or platform equivalent).
 
-6) Deliverables referenced (what to commit)
-- CLAUDE.md — clean, committable version (≤200 lines), quick project-specific placeholders.
-- CLAUDE.annotated.md — maintainer reference file with HTML comments explaining why each line exists (comments stripped on injection, zero runtime cost).
-- CLAUDE.minimal.md — tiny template for quick projects (<500 tokens target).
-- CLAUDE.monorepo.md — root monorepo guidance and pointers to per-package CLAUDE.md files (loaded on demand).
+6) Files referenced (only CLAUDE.md is in this repo)
+- CLAUDE.md — copy of the personal global config (`~/.claude/CLAUDE.md`), kept under 200 lines.
+- Not in this repo (referenced by the research, never committed):
+  - CLAUDE.annotated.md — maintainer reference file with HTML comments explaining why each line exists (comments stripped on injection, zero runtime cost).
+  - CLAUDE.minimal.md — tiny template for quick projects (<500 tokens target).
+  - CLAUDE.monorepo.md — root monorepo guidance and pointers to per-package CLAUDE.md files (loaded on demand).
 
 7) Operational rules for long sessions (workflow guidance)
 - Run `/clear` between unrelated tasks to reset noise.
@@ -88,7 +89,7 @@ All the following items are taken from the research text you provided and the re
 - MorphLLM and Steve Kinney blog posts — conflicting measurements on auto-compact thresholds (Morph: 64–75% vs Steve Kinney: ~95%). Use `/compact` proactively.
 - Anthropic Support article on models usage & limits (prompt caching notes): https://support.claude.com/en/articles/14552983-models-usage-and-limits-in-claude-code
 
-Full bibliography and the larger list of 164 sources referenced in the research are preserved in the uploaded CLAUDE.annotated.md and the main CLAUDE.md in this repo. See those files for per-line evidence links and timestamps.
+The full list of 164 sources referenced in the research is not in this repo. Only the sources cited above are reproduced here.
 
 ---
 
@@ -97,7 +98,4 @@ Full bibliography and the larger list of 164 sources referenced in the research 
 - Reproduced technical quotes and issue numbers (e.g., #18560 and #37344) so provenance is explicit.
 - Clarified which items are heuristics vs. official documented behavior.
 - Added operational caveats and explicit migration suggestions for monorepos and hooks.
-
----
-
-If anything is missing from this expanded reference dump (URLs, dates, or verbatim quotes you want added), paste them and I'll append them verbatim. Commit: expanded README with full evidence.
+- Corrected references to files that are not in this repo, and removed leftover chat text.
