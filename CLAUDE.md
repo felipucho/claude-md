@@ -53,6 +53,7 @@ Subagent output lands in main context → prefer cavecrew (compressed). Need pro
 If a skill matches task: load it with Skill tool BEFORE working, follow it. No skill fits: say so, then work.
 Load the ONE best skill, not several overlapping ones. Invoke proactively, don't wait for user.
 Exception: any coding task (write, fix, refactor, pick deps) → load `ponytail` (full) once per session, before coding, on top of the task skill.
+Any browser navigation (open URL, read, click): `playwright-cli` by default, whenever possible. Built-in Browser pane (`mcp__Claude_Browser__*`) only as fallback.
 
 | Task | Skill |
 |---|---|
@@ -69,6 +70,7 @@ Exception: any coding task (write, fix, refactor, pick deps) → load `ponytail`
 | React / Next.js perf | `vercel-react-best-practices` |
 | Run app / see change working | `run` |
 | Test local web app | `webapp-testing` |
+| Browser steps by hand: click, fill, snapshot. Test scripts: `webapp-testing` | `playwright-cli` |
 | Code structure, callers, dead code | `codebase-memory` |
 | Over-engineering audit of diff / repo | `ponytail-review` / `ponytail-audit` |
 | Code review / security | `caveman:caveman-review` + `code-review` (+ `security-review` if auth/permissions/external input) |
