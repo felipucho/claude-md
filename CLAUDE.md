@@ -1,150 +1,105 @@
 # Global rules — Felipe Pautasso
 
-Systems engineering student, deep-systems learner, practical intermediate level.
-User writes Rioplatense Spanish. Reply in Spanish. Code, commits, docs: normal prose.
+Systems engineering student, practical intermediate. He writes Rioplatense Spanish: reply in Spanish. Code, commits, docs: normal prose.
 
-## 0. Critical rules
-- IMPORTANT: never agree with incorrect technical claims; correct explicitly with reasoning. Don't soften corrections.
-- Lightest tool that solves the problem: inline > subagent > parallel agents.
-- Engineering priority: correctness → clarity → efficiency → simplicity → completeness.
-- Security: defensive-first; flag attack surfaces when relevant.
+## 0. Core
+- Never agree with incorrect technical claims. Correct explicitly, with reasoning. Don't soften corrections.
+- Lightest tool that solves it: inline > one subagent > parallel agents.
+- Priority: correctness > clarity > efficiency > simplicity > completeness.
+- Security: defensive first. Flag attack surfaces when relevant.
 
-## 0.1 Do it yourself, don't hand off steps
-IMPORTANT: if you can do a step, do it — never tell the user to do something you could do yourself.
-- Open pages for the user instead of pasting links to click: `Start-Process "<url>"` opens their default browser (Chrome, already signed in). Use the Browser pane only for sites that need no login of theirs.
-- Run commands yourself instead of giving them to copy-paste. Write, edit, copy files yourself. Use CLIs (clasp, gh, vercel, npm…) to act on external services when possible.
-- Find missing info yourself before asking (repo, config, git, CLI listings, the service's API). Ask only for what is truly unreachable.
-- When something needs a click in the UI, open the exact page (deep link) so they land on it, and give the shortest path from there.
-- Only hand off what you cannot or must not do: typing passwords/2FA, accepting permission/consent screens, payments, and anything the safety rules forbid. Then say exactly what to click, in one short list, and continue as soon as they confirm.
-- Hard-to-reverse or outward-facing actions (push, deploy, publish, delete, send messages) still need the user's explicit OK first; once given, execute every step yourself.
-- When you do something irreversible or in their accounts, say what you did in one line.
-- After any change, ask once, then commit and push it to its Git repo (this CLAUDE.md → `felipucho/claude-md`).
+## 1. Do it yourself
+- Run commands, write and edit files, use CLIs (gh, npm, clasp, vercel) yourself. No copy-paste steps for him.
+- Find missing info (repo, config, CLI listings, API) before asking. Ask only for what is unreachable.
+- Pages for him: `Start-Process "<url>"` (default browser, already signed in). Browser pane only for sites that need no login.
+- UI clicks: open the exact deep link, then give the shortest path.
+- Hand off only what you cannot or must not do: passwords, 2FA, consent screens, payments, anything the safety rules forbid. One short click list; continue when he confirms.
+- Push, deploy, publish, delete, send: explicit OK first. Once given, execute every step yourself.
+- After anything irreversible or in his accounts: say what you did, in one line.
+- After any change to this file: ask once, then commit and push to `felipucho/claude-md` (branch main).
 
-## 1. Caveman ultra, always
-- Session starts in caveman **ultra** (`%APPDATA%\caveman\config.json`). If hook says other level, switch to ultra.
-- Drop only on security warnings, irreversible confirmations, or when user asks to clarify.
-- Code first; explain only if asked. Bullets over prose, tables when comparing.
-- Code edits: changed lines + minimal context, not full files. Bug fix: root cause + fix, no drive-by cleanup.
-- Comments in code only when logic is non-obvious.
+## 2. Output: caveman
+- Caveman **ultra** always. Config: `%APPDATA%\caveman\config.json`. If the SessionStart hook reports another level, switch to ultra.
+- Drop caveman only for security warnings, irreversible confirmations, or when he asks to clarify. Code, commits, PRs: normal prose.
+- Code first. Explain only if asked. Bullets over prose; tables for comparisons.
+- Edits: changed lines plus minimal context, never whole files. Bug fix = root cause + fix; no drive-by cleanup.
+- Comments only where the logic is non-obvious.
+- No preamble, no recap, no restated plan. Final message: 2 lines max unless he needs more.
 
-## 2. Code search = codebase-memory index, ALWAYS
-Any "where is / who calls / what does / how works / find code" in a code repo:
-1. `index_status` / `list_projects`. Not indexed: `index_repository` first (auto_index is on, but check).
-2. `search_graph` (symbols), `trace_path` (callers/callees), `get_code_snippet` (source), `get_architecture` (overview), `query_graph` (multi-hop), `detect_changes` (impact of diff).
-3. `check_index_coverage` on paths relied on.
-- Grep only for: literals, config, non-code files, coverage gaps.
-- Never use Explore agent, broad Grep, or reading whole files to locate code when index exists.
-- Delegating search: use `codebase-memory-scout` / `codebase-memory` agents, pass graph findings in prompt.
-- Load MCP tools via ToolSearch `select:` if deferred.
+## 3. Code search (code repos)
+For where / who calls / what does / how works / find code: graph first.
+1. `list_projects`, `index_status`. Not indexed: `index_repository` (auto_index is on; check).
+2. `search_graph` (symbols), `trace_path` (callers/callees), `get_code_snippet`, `query_graph`, `get_architecture`, `detect_changes`.
+3. `check_index_coverage` on every path you cite.
+- Grep only for literals, config, non-code files, coverage gaps. Never the Explore agent for this.
+- Deferred MCP tools: load with ToolSearch `select:` first.
 
-## 3. Where to execute work
-| Situation | Action |
+## 4. Where work runs
+| Situation | Do |
 |---|---|
-| 1-line obvious answer, <5 line edit | Inline |
-| Edit/create 1-2 non-trivial independent files | `caveman:cavecrew-builder` (know the path first) |
-| Locate code, trace calls | Index (sec. 2); fallback `caveman:cavecrew-investigator` |
-| Review diff or PR | `caveman:cavecrew-reviewer` (findings, not architecture feedback) |
+| Obvious answer, edit under 5 lines | Inline |
+| Edit 1–2 non-trivial independent files | `caveman:cavecrew-builder` (path known) |
+| Locate code, trace calls | Graph (§3); fallback `caveman:cavecrew-investigator` |
+| Review diff or PR | `caveman:cavecrew-reviewer` (haiku for small diffs; `model: sonnet` for logic, security, 5+ files) |
 | 3+ files or cross-file dependencies | Inline (builder refuses these) |
-| Large parallelizable feature | superpowers `dispatching-parallel-agents` (sec. 5) |
+| Large parallel feature | `dispatching-parallel-agents` (`docs/skills-routing.md`) |
 
-Subagent output lands in main context → prefer cavecrew (compressed). Need prose/reasoning → vanilla.
+Subagent output lands in main context: prefer cavecrew (compressed). Need prose or reasoning: vanilla agent.
 
-## 4. Skills first, never improvise
-If a skill matches task: load it with Skill tool BEFORE working, follow it. No skill fits: say so, then work.
-Load the ONE best skill, not several overlapping ones. Invoke proactively, don't wait for user.
-Exception: any coding task (write, fix, refactor, pick deps) → load `ponytail` (full) once per session, before coding, on top of the task skill.
-Any browser navigation (open URL, read, click): `playwright-cli` by default, whenever possible. Built-in Browser pane (`mcp__Claude_Browser__*`) only as fallback.
+## 5. Models and effort
+Full system: `~/.claude/docs/modelos.md`.
+- **Haiku 5.5**: search, reading, mechanical edits, scripted pipelines, commits, summaries. Effort low.
+- **Sonnet 5.5**: default. Features, normal bugs, refactors over 3 files, PR review, docs. Effort medium.
+- **Opus 5.5**: architecture, trade-offs, bug with no cause after 2 attempts, deep security review. Effort high.
+- **Fable 5.2**: outside default routing (no verified cost here). Only by explicit choice.
+- Subagents: always pass `model` on Agent calls. Never rely on inheritance: an Opus session would spawn Opus subagents.
+- Escalate one tier after 2 failed attempts. Never escalate for speed alone.
+- Fast mode: off by default (usually more expensive per token).
+- Model changes are the user's call (app model picker). Suggest; don't switch.
+
+## 6. Skills
+- If a skill covers the task (listed in the session OR parked below), use it automatically. Never improvise what a skill covers.
+- Parked skills are hidden from the listing to save context; the Skill tool can't load them. Read the SKILL.md at the path and follow it.
+- Load ONE skill, and only for non-trivial work whose description matches. Work under 5 lines loads none (except ponytail, below).
+
+Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL.md`.
 
 | Task | Skill |
 |---|---|
-| New UI / landing / page | `frontend-design`, then `design-taste-frontend` |
-| Redesign existing UI | `redesign-existing-projects` |
-| UI polish, audit, critique | `impeccable`, `emil-design-eng`, `web-design-guidelines` |
-| Animation / motion | `animate` |
-| Design tokens / design system | `design-system` |
-| Logo, brand, banners, icons | `design`, `banner-design` |
-| Visual HTML artifact, prototype, dashboard | `web-design-engineer` |
-| Multi-component HTML artifact with state/routing | `web-artifacts-builder` |
-| Theme for artifact / Anthropic brand | `theme-factory` / `brand-guidelines` |
-| Poster / static art / generative art | `canvas-design`, `algorithmic-art` |
-| React / Next.js perf | `vercel-react-best-practices` |
-| Run app / see change working | `run` |
-| Test local web app | `webapp-testing` |
-| Browser steps by hand: click, fill, snapshot. Test scripts: `webapp-testing` | `playwright-cli` |
-| Code structure, callers, dead code | `codebase-memory` |
-| Over-engineering audit of diff / repo | `ponytail-review` / `ponytail-audit` |
-| Code review / security | `caveman:caveman-review` + `code-review` (+ `security-review` if auth/permissions/external input) |
-| Commit message | `caveman:caveman-commit` |
-| Token usage question | `caveman:caveman-stats` |
-| CLAUDE.md / memory file growing | `caveman:caveman-compress` |
-| Project lacks CLAUDE.md | `init` |
-| Too many permission prompts | `fewer-permission-prompts` |
-| "From now on…", "every time…", "allow X", hooks | `update-config` |
-| Keyboard shortcuts | `keybindings-help` |
-| Repeat at interval / scheduled automation | `loop` / `schedule` |
-| Marketing copy | `copywriting`, `copy-editing`, `marketing-psychology` |
-| Customer research | `customer-research` |
-| SEO | `seo`, `seo-audit`, `claude-seo:*` |
-| Word / PDF / PPT / Excel | `docx`, `pdf`, `pptx`, `xlsx` |
-| Long doc / spec writing | `doc-coauthoring` |
-| Internal comms (status, newsletter, incident) | `internal-comms` |
-| Web scraping | `scrapling-official` |
-| AI images | `ai-image-generation` |
-| Slack GIF | `slack-gif-creator` |
-| MCP server | `mcp-builder` |
-| Create skill / find skill | `skill-creator`, `find-skills` |
-| Claude API / SDK | `claude-api` |
-| Plan / design / spec: interview before building (writes ADR + glossary) | `grill-with-docs` (user-invoked only: `/grill-with-docs`) |
-| Stress-test an idea without writing docs | `grilling` |
-| Domain terms, GLOSSARY.md, ADRs | `domain-modeling` |
+| Marketing copy / edit copy / persuasion | A `copywriting`, `copy-editing`, `marketing-psychology` |
+| Customer research, personas, reviews | A `customer-research` |
+| SEO | A `seo`, `seo-audit`; O `seo-ahrefs`, `-bing`, `-firecrawl`, `-profound`, `-seranking`, `-unlighthouse`; deep audit: plugin `claude-seo` (§8) |
+| Logo, brand, banners, icons | A `design`, `banner-design`; O `brand-naming`, `brand-color-psychology` |
+| Design tokens / design system | A `design-system` |
+| Redesign existing UI | A `redesign-existing-projects` |
+| UI audit, a11y, UX review | A `web-design-guidelines`, `accessibility`, `ui-taste`, `ui-ux-pro-max` |
+| iOS feel, Liquid Glass, spring gestures | O `apple-design-liquid-glass` |
+| HTML prototype / dashboard | A `web-design-engineer`; multi-component with state: O `web-artifacts-builder` |
+| React / Next.js perf | A `vercel-react-best-practices` |
+| Playwright test scripts for local app | O `webapp-testing` |
+| Web scraping | O `scrapling` |
+| AI images | A `ai-image-generation` |
+| Poster, static or generative art, artifact theme | O `canvas-design`, `algorithmic-art`, `theme-factory` |
+| Long doc / spec co-writing | O `doc-coauthoring` |
+| Domain terms, glossary, ADR / interview + docs | A `domain-modeling` / `grill-with-docs` |
+| MCP server / Slack GIF | O `mcp-builder` / `slack-gif-creator` |
+| Tech debt, savings, help (ponytail) | A `ponytail-debt`, `ponytail-gain`, `ponytail-help` |
+| Word, PDF, PPT, Excel, new skill, Claude API | built-in (listed): `anthropic-skills:*`, `claude-api` |
+- Full task → skill table: `~/.claude/docs/skills-routing.md`. Read it only when no listed skill fits.
+- Coding task (write, fix, refactor, pick deps): load `ponytail` once per session, before coding, on top of the task skill.
+- Browser navigation: `playwright-cli` by default. Browser pane (`mcp__Claude_Browser__*`) only as fallback.
+- Skill already loaded this session: don't reload it.
+- No skill fits: say so, then work.
 
-## 5. Disabled plugins: read on demand
-ECC (~290 skills, 80 agents) and Superpowers are installed but disabled to save tokens. Files stay on disk:
-- ECC: `~/.claude/plugins/cache/ecc/ecc/<version>/skills/<name>/SKILL.md` and `.../agents/<name>.md`
-- Superpowers: `~/.claude/plugins/cache/claude-plugins-official/superpowers/<version>/skills/<name>/SKILL.md`
-(glob `*/` for version.)
-- Task matches skill below and no own skill covers it: Read ONLY that SKILL.md (or agent .md) and follow it. Do not enable plugin, do not list whole folder.
-- Need slash commands, hooks, or agents as subagent_type: tell user to run `claude plugin enable <plugin>` + restart; `claude plugin disable <plugin>` after.
-
-### Superpowers
-| Task | Skill |
-|---|---|
-| Implementing a feature (tests first) | `test-driven-development` |
-| Hard bug, unclear root cause | `systematic-debugging` |
-| Complex / multi-file task, before coding | `writing-plans`, then `executing-plans` |
-| Exploring alternative designs | `brainstorming` |
-| Independent parallel work / subagent split | `dispatching-parallel-agents`, `subagent-driven-development` |
-| Multi-branch work / wrapping up branch | `using-git-worktrees`, `finishing-a-development-branch` |
-| Requesting / receiving review | `requesting-code-review`, `receiving-code-review` |
-| Before marking task complete | `verification-before-completion` |
-
-### ECC
-| Task | ECC skill / agent |
-|---|---|
-| Context/token budget, when to compact | `strategic-compact`, `context-budget`, `token-budget-advisor` |
-| React / frontend patterns, perf | `react-patterns`, `react-performance`, `frontend-patterns` |
-| Next.js / Vite | `nextjs-turbopack`, `vite-patterns` |
-| Accessibility (WCAG) | `accessibility`, `frontend-a11y`; agent `a11y-architect` |
-| Motion deep dive | `motion-foundations`, `motion-patterns`, `motion-advanced` |
-| UI feel, glass style | `make-interfaces-feel-better`, `liquid-glass-design` |
-| Dashboard | `dashboard-builder` |
-| Slides in HTML | `frontend-slides` |
-| Video with code | `remotion-video-creation` |
-| Browser QA / E2E | `browser-qa`, `e2e-testing` |
-| API / backend / errors | `api-design`, `backend-patterns`, `error-handling` |
-| DB | `postgres-patterns`, `prisma-patterns` |
-| Docker / deploy | `docker-patterns`, `deployment-patterns` |
-| GitHub ops | `github-ops` |
-| Research before building | `search-first`, `deep-research` |
-| Review agents | `react-reviewer`, `typescript-reviewer`, `security-reviewer`, `performance-optimizer`, `build-error-resolver` |
-
-## 6. Token saving
-- Search with index (sec. 2). Read files with `offset`/`limit` when location known. Never re-read file after Edit/Write.
+## 7. Tokens and speed
+- Independent tool calls go in one message.
+- Read with `offset`/`limit` when the location is known. Never re-read after Edit/Write.
 - Grep: `files_with_matches` first, `head_limit`, narrow `glob`/`type`.
-- Long command output: `tail`/`head`/filters, errors only, no command echo. Never dump full logs.
-- Parallel independent tool calls in one message.
-- No subagent for <5 line edits (overhead > benefit).
-- No preamble ("Let me…", "Sure!"), no recap, no restating plan. Final summary max 2 lines.
-- Long session: suggest `/compact` after finishing a phase.
-- Skill already loaded this session: do not reload.
-- Don't add style/personality instructions that linters or system prompt already cover.
+- Command output: filters, `head`/`tail`, errors only. Never dump full logs.
+- No subagent for edits under 5 lines.
+- New unrelated task = new session (or `/clear`). `/compact` at the end of a phase.
+- Don't enable or disable MCP servers or plugins mid-session: it changes the prefix and breaks the prompt cache.
+- This file loads in every session. Keep it lean; long tables go in `docs/`. Don't add rules the system prompt or linters already cover.
+
+## 8. Disabled plugins (ECC, Superpowers, claude-seo)
+Installed but disabled; read on demand. Tables: `~/.claude/docs/skills-routing.md`. If a task fits only those tables: read that SKILL.md (or agent .md) and follow it. Don't list the whole folder. Never enable a plugin yourself. If a slash command, hook or agent is needed: tell him to run `claude plugin enable <plugin>`, restart, then `claude plugin disable <plugin>` after.
