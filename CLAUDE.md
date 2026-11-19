@@ -88,6 +88,7 @@ Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL
 - Full task → skill table: `~/.claude/docs/skills-routing.md`. Read it only when no listed skill fits.
 - Coding task (write, fix, refactor, pick deps): load `ponytail` once per session, before coding, on top of the task skill.
 - Browser navigation: `playwright-cli` by default. Browser pane (`mcp__Claude_Browser__*`) only as fallback.
+- Desktop apps (Notepad, Calculator, any Windows GUI): `agent-desktop` skill + CLI (npm, merged Windows guide). Headless by default; cursor overlay only if he asks (~2x slower, needs `bin\agent-desktop.exe` copy). One global lease: no parallel actions.
 - Skill already loaded this session: don't reload it.
 - No skill fits: say so, then work.
 
