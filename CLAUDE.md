@@ -83,12 +83,17 @@ Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL
 | Long doc / spec co-writing | O `doc-coauthoring` |
 | Domain terms, glossary, ADR / interview + docs | A `domain-modeling` / `grill-with-docs` |
 | MCP server / Slack GIF | O `mcp-builder` / `slack-gif-creator` |
+| Semantic code search when the graph (§3) has gaps | A `ccc` |
+| Status reports, internal updates, newsletters, FAQs | O `internal-comms` |
 | Tech debt, savings, help (ponytail) | A `ponytail-debt`, `ponytail-gain`, `ponytail-help` |
 | Word, PDF, PPT, Excel, new skill, Claude API | built-in (listed): `anthropic-skills:*`, `claude-api` |
 - Full task → skill table: `~/.claude/docs/skills-routing.md`. Read it only when no listed skill fits.
 - Coding task (write, fix, refactor, pick deps): load `ponytail` once per session, before coding, on top of the task skill.
 - Browser navigation: `playwright-cli` by default. Browser pane (`mcp__Claude_Browser__*`) only as fallback.
-- Desktop apps (Notepad, Calculator, any Windows GUI): `agent-desktop` skill + CLI (npm, merged Windows guide). Headless by default; cursor overlay only if he asks (~2x slower, needs `bin\agent-desktop.exe` copy). One global lease: no parallel actions.
+- Desktop GUI automation (any native app: click, type, read UI, menus, windows, clipboard, notifications): `agent-desktop` skill + CLI by default; computer-use MCP only as fallback. Headless by default; cursor overlay only if he asks (~2x slower). One global lease: no parallel actions.
+  - Missing CLI: `npm install -g agent-desktop`, then `agent-desktop status`.
+  - Missing skill: `npx skills add vercel-labs/agent-desktop --skill agent-desktop --skill agent-desktop-windows -g -y`, then merge the Windows SKILL.md and `references/` into `agent-desktop` and remove the Windows skill. `npx skills update` undoes the merge.
+  - Overlay: the renderer checks the exe name. Copy `%APPDATA%\npm\node_modules\agent-desktop\bin\agent-desktop-win32-x64.exe` to `agent-desktop.exe` in that folder (redo after every npm reinstall).
 - Skill already loaded this session: don't reload it.
 - No skill fits: say so, then work.
 
