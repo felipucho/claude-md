@@ -78,7 +78,7 @@ Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL
 | React / Next.js perf | A `vercel-react-best-practices` |
 | Playwright test scripts for local app | O `webapp-testing` |
 | Web scraping | O `scrapling` |
-| AI images | A `ai-image-generation` |
+| AI images (default: inference.sh via `belt`; ask him before each generation) | A `ai-image-generation` |
 | Poster, static or generative art, artifact theme | O `canvas-design`, `algorithmic-art`, `theme-factory` |
 | Long doc / spec co-writing | O `doc-coauthoring` |
 | Domain terms, glossary, ADR / interview + docs | A `domain-modeling` / `grill-with-docs` |
@@ -94,7 +94,7 @@ Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL
   - Missing CLI: `npm install -g agent-desktop`, then `agent-desktop status`.
   - Missing skill: `npx skills add vercel-labs/agent-desktop --skill agent-desktop --skill agent-desktop-windows -g -y`, then merge the Windows SKILL.md and `references/` into `agent-desktop` and remove the Windows skill. `npx skills update` undoes the merge.
   - Overlay: the renderer checks the exe name. Copy `%APPDATA%\npm\node_modules\agent-desktop\bin\agent-desktop-win32-x64.exe` to `agent-desktop.exe` in that folder (redo after every npm reinstall).
-- Voice / TTS: ElevenLabs via skill `text-to-speech` (elevenlabs/skills). Key in user env `ELEVENLABS_API_KEY` (read it with `[Environment]::GetEnvironmentVariable(..., "User")`; never print it). His defaults: voice Yorman Andres `J2Jb9yZNvpXUNAL3a2bw`, `eleven_multilingual_v2`, stability 0.7, similarity 0.8, style 0.1, speed 0.9, speaker boost off. Before generating, check his latest item in `/v1/history` in case he changed them.
+- Voice / TTS: ElevenLabs via skill `text-to-speech` (elevenlabs/skills). Key in user env `ELEVENLABS_API_KEY` (read it with `[Environment]::GetEnvironmentVariable(..., "User")`; never print it). His defaults: voice Mauricio `94zOad0g7T7K4oa7zhDq` (latam), `eleven_v4`, stability 0.4, similarity 0.8; direct tone with audio tags (e.g. `[confident]`, `[smiling]` on the closing line). Before generating, check his latest item in `/v1/history` in case he changed them.
 - Skill already loaded this session: don't reload it.
 - No skill fits: say so, then work.
 
