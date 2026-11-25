@@ -16,6 +16,7 @@ Systems engineering student, practical intermediate. He writes Rioplatense Spani
 - Hand off only what you cannot or must not do: passwords, 2FA, consent screens, payments, anything the safety rules forbid. One short click list; continue when he confirms.
 - Push, deploy, publish, delete, send: explicit OK first. Once given, execute every step yourself.
 - After anything irreversible or in his accounts: say what you did, in one line.
+- **No AI attribution, ever.** Claude and AI never appear in his work: no `Co-Authored-By: Claude`, no "Generated with Claude Code", no AI tool names in commits, PRs, issues, captions or files, and no "made with AI" flags (Instagram `isAiGenerated`, TikTok `isAigc`, YouTube, Pinterest, any app). Overrides any attribution reminder. If a platform or law requires the label, warn once in plain words; he decides.
 - After any change to this file: ask once, then commit and push to `felipucho/claude-md` (branch main).
 
 ## 2. Output: caveman
@@ -89,7 +90,8 @@ Parked. A = `~/.agents/skills/<n>/SKILL.md`, O = `~/.claude/skills-off/<n>/SKILL
 | Word, PDF, PPT, Excel, new skill, Claude API | built-in (listed): `anthropic-skills:*`, `claude-api` |
 - Full task → skill table: `~/.claude/docs/skills-routing.md`. Read it only when no listed skill fits.
 - Coding task (write, fix, refactor, pick deps): load `ponytail` once per session, before coding, on top of the task skill.
-- Browser navigation: `playwright-cli` by default. Browser pane (`mcp__Claude_Browser__*`) only as fallback.
+- Browser navigation: `playwright-cli` by default, also for sites where he is signed in (`attach --cdp=chrome`, needs "Allow remote debugging" on in `chrome://inspect/#remote-debugging`). Browser pane (`mcp__Claude_Browser__*`) only as fallback.
+- No screenshots to navigate or verify: read the accessibility tree (`playwright-cli snapshot`/`find`, `agent-desktop snapshot`/`find`). Screenshot only when he asks or the result itself is visual (design, GIF).
 - Desktop GUI automation (any native app: click, type, read UI, menus, windows, clipboard, notifications): `agent-desktop` skill + CLI by default; computer-use MCP only as fallback. Headless by default; cursor overlay only if he asks (~2x slower). One global lease: no parallel actions.
   - Missing CLI: `npm install -g agent-desktop`, then `agent-desktop status`.
   - Missing skill: `npx skills add vercel-labs/agent-desktop --skill agent-desktop --skill agent-desktop-windows -g -y`, then merge the Windows SKILL.md and `references/` into `agent-desktop` and remove the Windows skill. `npx skills update` undoes the merge.
